@@ -16,9 +16,9 @@ MonoBehaviour:
   frequency: 440
   duration: 1
   volume: 0.5
-  waveType: 3
+  waveType: 0
   audioData:
-    attack: 0.01
+    attack: 0.05
     decay: 0.1
-    sustain: 0.7
-    release: 0.2
+    sustain: 0.4
+    release: 0.8

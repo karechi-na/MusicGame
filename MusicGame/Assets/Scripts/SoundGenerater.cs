@@ -18,8 +18,11 @@ public static class SoundGenerater
             float waveform = 
                 GetWaveSample(toneData.waveType, toneData.frequency, time);
 
+            float envelopeVolume = 
+                GetEnvelopeVolume(time, toneData.duration,toneData.audioData);
+
             samples[i] =
-                waveform * toneData.volume;
+                waveform * envelopeVolume * toneData.volume;
         }
 
         AudioClip clip =
@@ -54,5 +57,43 @@ public static class SoundGenerater
 
             _ => 0.0f
         };
+    }
+
+    private static float GetEnvelopeVolume(float time, float duration, AudioData audioData)
+    {
+        float attack = audioData.attack;
+        float decay = audioData.decay;
+        float sustain = audioData.sustain;
+        float release = audioData.release;
+
+        float releaseStartTime = Mathf.Max(0.0f, duration - release);
+
+        if (time < attack)
+        {
+            if (attack <= 0.0f) return 1.0f;
+            return time / attack;
+        }
+
+        if (time < attack + decay)
+        {
+            if (decay <= 0.0f) return sustain;
+
+            float decayTime = time - attack;
+            float t = decayTime / decay;
+
+            return Mathf.Lerp(1.0f, sustain, t);
+        }
+
+        if (time >= releaseStartTime)
+        {
+            if (release <= 0.0f) return 0.0f;
+
+            float releaseTime = time - releaseStartTime;
+            float t = releaseTime / release;
+
+            return Mathf.Lerp(sustain, 0.0f, t);
+        }
+
+        return sustain;
     }
 }
