@@ -11,6 +11,12 @@ public class SoundPlayer : MonoBehaviour
 
     [SerializeField] private PlayerInput playerInput;
 
+    private AudioClip clip;
+
+    private void Awake()
+    {
+        clip = SoundGenerater.AudioClipGenerater(toneData);
+    }
 
     private void OnEnable()
     {
@@ -23,9 +29,12 @@ public class SoundPlayer : MonoBehaviour
 
     private void SoundPlay(InputAction.CallbackContext callbackContext)
     {
-        AudioClip clip = SoundGenerater.AudioClipGenerater(toneData);
-
         audioSource.PlayOneShot(clip);
+    }
+
+    private void OnDestroy()
+    {
+        if(clip != null) Destroy(clip);
     }
 
     private void Reset()
